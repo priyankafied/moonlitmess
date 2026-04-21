@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Moonlit Mess</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <section id="landing" class="screen active">
+    <h1>Moonlit Mess</h1>
+    <p class="sub">A quiet space to write what’s heavy and let it go.</p>
+
+    <div class="actions">
+      <button onclick="goTo('write')">Leave it</button>
+      <button onclick="goTo('lightIntro')">Find a light</button>
+    </div>
+  </section>
+
+  <section id="write" class="screen">
+    <p class="prompt">You can put it down here.</p>
+    <textarea id="message" placeholder="Write it out..."></textarea>
+
+    <div class="actions">
+      <button onclick="goTo('landing')">← back</button>
+      <button onclick="goTo('reflection')">Continue</button>
+    </div>
+  </section>
+
+  <section id="reflection" class="screen">
+    <p class="reflection-text">You don’t have to release all of it. Just this, for now.</p>
+    <p class="question" id="question"></p>
+
+    <div class="actions">
+      <button onclick="goTo('release')">Let it go</button>
+      <button onclick="goTo('stay')">Let it stay</button>
+    </div>
+  </section>
+
+  <section id="release" class="screen">
+    <p class="release-text" id="releaseText"></p>
+    <p class="fade-note">Let it drift...</p>
+  </section>
+
+  <section id="stay" class="screen">
+    <p class="prompt">You can hold this a little longer.</p>
+    <p class="sub">It doesn’t have to be figured out right now.</p>
+
+    <div class="actions">
+      <button onclick="goTo('landing')">Return</button>
+      <button onclick="goTo('release')">Set down a small part</button>
+    </div>
+  </section>
+
+  <section id="lightIntro" class="screen">
+    <p class="prompt">Take a second before you find something...</p>
+
+    <div class="actions">
+      <button onclick="goTo('light')">Continue</button>
+      <button onclick="goTo('landing')">← back</button>
+    </div>
+  </section>
+
+  <section id="light" class="screen">
+    <p class="prompt">Maybe this will meet you where you are.</p>
+
+    <div class="message-box">
+      <p id="lightMessage"></p>
+    </div>
+
+    <div class="actions">
+      <button onclick="goTo('landing')">Return</button>
+    </div>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

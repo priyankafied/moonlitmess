@@ -2,78 +2,119 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Moonlit Mess</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="app">
+    <canvas id="sky"></canvas>
+    <button class="music-btn" id="musicBtn" onclick="toggleMusic()">&#9834; music</button>
 
-  <section id="landing" class="screen active">
-    <h1>Moonlit Mess</h1>
-    <p class="sub">A quiet space to write what’s heavy and let it go.</p>
+    <div class="z">
+      <div class="moon-orb"></div>
+      <div class="site-name">Moonlit Mess</div>
+      <div class="tagline">a quiet place that holds what you carry<br>and asks nothing in return</div>
 
-    <div class="actions">
-      <button onclick="goTo('write')">Leave it</button>
-      <button onclick="goTo('lightIntro')">Find a light</button>
+      <!-- HOME -->
+      <div class="screen" id="s0">
+        <p class="hero-text">
+          This space doesn't remember you.<br>
+          Nothing you leave here is stored, judged,<br>or traced back to you.<br>
+          <em>It's just you, tonight, and what you're carrying.</em>
+        </p>
+        <div class="btn-row">
+          <button class="btn-moon" onclick="goTo('s-gate')">leave it</button>
+          <button class="btn-moon ghost" onclick="goTo('s-find')">find a light</button>
+        </div>
+      </div>
+
+      <!-- GATE -->
+      <div class="screen hidden" id="s-gate">
+        <p class="inter-msg slow-in" style="margin-top:10px;">Some thoughts need a place to go.<br>Leave yours here.</p>
+        <div class="btn-row slow-in" style="margin-top:4px;">
+          <button class="btn-moon ghost" onclick="goTo('s0')">go back</button>
+          <button class="btn-moon" onclick="goTo('s-write')">continue</button>
+        </div>
+      </div>
+
+      <!-- WRITE -->
+      <div class="screen hidden" id="s-write">
+        <p class="inter-msg slow-in" id="write-prompt" style="margin-bottom:18px;"></p>
+        <textarea id="thought-input" placeholder="write freely. no one will see this." rows="5"></textarea>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-moon ghost" onclick="goTo('s-gate')">go back</button>
+          <button class="btn-moon" id="btn-continue" onclick="doReflect()">continue</button>
+        </div>
+      </div>
+
+      <!-- REFLECT -->
+      <div class="screen hidden" id="s-reflect">
+        <div class="reflect-wrap">
+          <div class="typed-thought" id="typed-thought"></div>
+          <div class="reflect-q" id="reflect-q"></div>
+          <textarea id="reflect-response" placeholder="write your answer here, just for you..." rows="4"></textarea>
+          <div class="btn-row" id="reflect-btns">
+            <button class="btn-moon ghost" onclick="doStay()">let it stay</button>
+            <button class="btn-moon" onclick="doLetGo()">let it go</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LANTERN -->
+      <div class="screen hidden" id="s-lantern">
+        <div class="lantern-stage">
+          <canvas id="lc" height="340"></canvas>
+        </div>
+      </div>
+
+      <!-- CLOSURE -->
+      <div class="screen hidden" id="s-closure">
+        <p class="closure-text stillness" id="closure-line"></p>
+        <div class="btn-row stillness" id="closure-btns" style="opacity:0;">
+          <button class="btn-moon ghost" onclick="goTo('s0')">return</button>
+          <button class="btn-moon" onclick="goTo('s-leave-light')">leave a light</button>
+        </div>
+      </div>
+
+      <!-- STAY -->
+      <div class="screen hidden" id="s-stay">
+        <p class="stay-msg slow-in">That's okay.<br>You don't have to release all of it now.<br>Come back when you're ready.</p>
+        <button class="btn-moon" onclick="goTo('s0')">go gently</button>
+      </div>
+
+      <!-- LEAVE A LIGHT -->
+      <div class="screen hidden" id="s-leave-light">
+        <p class="inter-msg slow-in" style="margin-bottom:18px;">Leave a small, human thought<br>for a stranger to find tonight.</p>
+        <textarea id="light-input" placeholder="not advice, not wisdom — just something true..."></textarea>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-moon ghost" onclick="goTo('s-closure')">go back</button>
+          <button class="btn-moon" id="btn-leave-light" onclick="doLeaveLight()">send it into the night</button>
+        </div>
+      </div>
+
+      <!-- LIGHT SENT -->
+      <div class="screen hidden" id="s-light-sent">
+        <p class="inter-msg slow-in" style="color:#8a9878;">Someone will find this.<br>Thank you for leaving something soft behind.</p>
+        <button class="btn-moon" style="margin-top:8px;" onclick="goTo('s0')">return</button>
+      </div>
+
+      <!-- FIND A LIGHT -->
+      <div class="screen hidden" id="s-find">
+        <div class="light-sub" style="margin-top:8px;">someone left this for you</div>
+        <div class="light-msg-box" id="light-box"></div>
+        <div class="btn-row">
+          <button class="btn-moon ghost" onclick="goTo('s0')">go back</button>
+          <button class="btn-moon" onclick="nextLight()">another</button>
+        </div>
+      </div>
+
     </div>
-  </section>
+  </div>
 
-  <section id="write" class="screen">
-    <p class="prompt">You can put it down here.</p>
-    <textarea id="message" placeholder="Write it out..."></textarea>
-
-    <div class="actions">
-      <button onclick="goTo('landing')">← back</button>
-      <button onclick="goTo('reflection')">Continue</button>
-    </div>
-  </section>
-
-  <section id="reflection" class="screen">
-    <p class="reflection-text">You don’t have to release all of it. Just this, for now.</p>
-    <p class="question" id="question"></p>
-
-    <div class="actions">
-      <button onclick="goTo('release')">Let it go</button>
-      <button onclick="goTo('stay')">Let it stay</button>
-    </div>
-  </section>
-
-  <section id="release" class="screen">
-    <p class="release-text" id="releaseText"></p>
-    <p class="fade-note">Let it drift...</p>
-  </section>
-
-  <section id="stay" class="screen">
-    <p class="prompt">You can hold this a little longer.</p>
-    <p class="sub">It doesn’t have to be figured out right now.</p>
-
-    <div class="actions">
-      <button onclick="goTo('landing')">Return</button>
-      <button onclick="goTo('release')">Set down a small part</button>
-    </div>
-  </section>
-
-  <section id="lightIntro" class="screen">
-    <p class="prompt">Take a second before you find something...</p>
-
-    <div class="actions">
-      <button onclick="goTo('light')">Continue</button>
-      <button onclick="goTo('landing')">← back</button>
-    </div>
-  </section>
-
-  <section id="light" class="screen">
-    <p class="prompt">Maybe this will meet you where you are.</p>
-
-    <div class="message-box">
-      <p id="lightMessage"></p>
-    </div>
-
-    <div class="actions">
-      <button onclick="goTo('landing')">Return</button>
-    </div>
-  </section>
-
-  <script src="script.js"></script>
+  <script src="sky.js"></script>
+  <script src="music.js"></script>
+  <script src="lantern.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

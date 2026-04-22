@@ -21,7 +21,7 @@
       <div class="z">
         <div class="moon-orb" aria-hidden="true"></div>
         <div class="site-name" aria-hidden="true">Moonlit Mess</div>
-        <p class="tagline">a quiet place that holds what you carry<br>and asks nothing in return</p>
+        <p class="tagline">leave it under the moon</p>
 
         <!-- HOME -->
         <div class="screen" id="s0" role="region" aria-label="Home">
@@ -85,10 +85,17 @@
         </div>
 
         <!-- STAY -->
-        <div class="screen hidden" id="s-stay" role="region" aria-label="Holding gently">
-          <p class="stay-msg slow-in" tabindex="-1">That's okay.<br>You don't have to release all of it now.<br>Come back when you're ready.</p>
-          <button class="btn-moon" onclick="goTo('s0')">go gently</button>
-        </div>
+       <div class="screen hidden" id="s-stay" role="region" aria-label="Holding gently">
+  <p class="stay-msg slow-in" tabindex="-1">
+    you don’t have to fix this right now.<br>
+    just stay here a little longer.
+  </p>
+
+  <div class="btn-row">
+    <button class="btn-moon ghost" onclick="goTo('s0')">go gently</button>
+    <button class="btn-moon" onclick="goTo('s-find')">just sit with it</button>
+  </div>
+</div>
 
         <!-- LEAVE A LIGHT -->
         <div class="screen hidden" id="s-leave-light" role="region" aria-label="Leave a light for someone">

@@ -18,21 +18,26 @@
     <main>
       <h1 class="sr-only">Moonlit Mess — a quiet space to release what you carry</h1>
 
-      <div class="z">
-        <div class="moon-orb" aria-hidden="true"></div>
-        <div class="site-name" aria-hidden="true">Moonlit Mess</div>
-        <p class="tagline">a quiet place that holds what you carry<br>and asks nothing in return</p>
+    <div class="z">
+  <div class="moon-orb" aria-hidden="true"></div>
+  <div class="site-name" aria-hidden="true">Moonlit Mess</div>
 
-        <!-- HOME -->
-        <div class="screen" id="s0" role="region" aria-label="Home">
-          <div class="home-copy">
-            <p class="home-quiet">it's quiet here</p>
-            <p class="home-carry">you can leave what you're carrying</p>
-            <button class="home-primary" onclick="goTo('s-gate')" id="btn-leave-it">write it. leave it.</button>
-            <button class="home-secondary" onclick="goTo('s-find')" id="btn-find-light">find your light in the dark</button>
-          </div>
-        </div>
+  <!-- HOME -->
+  <div class="screen" id="s0" role="region" aria-label="Home">
+    <div class="home-copy">
+      <p class="home-quiet">it's quiet here</p>
+      <p class="home-carry">you can leave what you're carrying</p>
 
+      <button class="home-primary" onclick="goTo('s-gate')" id="btn-leave-it">
+        write it. leave it.
+      </button>
+
+      <button class="home-secondary" onclick="goTo('s-find')" id="btn-find-light">
+        find your light in the dark
+      </button>
+    </div>
+  </div>
+</div>
         <!-- GATE -->
         <div class="screen hidden" id="s-gate" role="region" aria-label="Before you write">
           <p class="inter-msg slow-in" style="margin-top:10px;" tabindex="-1">Some thoughts need a place to go.<br>Leave yours here.</p>

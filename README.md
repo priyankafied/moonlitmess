@@ -1,34 +1,32 @@
 # Moonlit Mess
 
-A quiet emotional space where you can leave what you're carrying — or find something soft left by someone else.
+A quiet emotional space between sky and sea.
+Write what you carry. Release it into the water.
+Find a light someone left for you.
 
-Nothing is stored. Nothing is social. Nothing builds identity.
+## Deploy to GitHub Pages
 
-## How to publish on GitHub Pages
+1. Create a repo named `moonlit-mess`
+2. Push all files to `main` branch
+3. Settings → Pages → Source: main / root
+4. Live at `https://yourusername.github.io/moonlit-mess`
 
-1. Create a new GitHub repository named `moonlit-mess`
-2. Upload all files into the repo root
-3. Go to **Settings → Pages**
-4. Under **Source**, select `main` branch and `/ (root)` folder
-5. Click **Save**
-6. Your site will be live at `https://yourusername.github.io/moonlit-mess`
-
-## File structure
+## Files
 
 ```
 moonlit-mess/
 ├── index.html   — structure and all screens
-├── style.css    — all visual styling
-├── app.js       — navigation, flow, Claude API calls
-├── lantern.js   — the release ritual animation
-├── sky.js       — night sky, stars, shooting stars
-├── music.js     — lo-fi ambient sound engine
-└── README.md
+├── style.css    — layout, CSS-only animations
+├── scene.js     — static star field + rare CSS shooting stars (no rAF)
+├── sound.js     — ambient ocean soundscape
+├── app.js       — flow logic, API calls, message pool
+└── bg.jpg       — moonlit sea background image
 ```
 
-## Note on the Claude API
+## Performance
 
-The reflect question is generated live via the Anthropic API.
-The API key is handled by the claude.ai environment during preview.
-For your own deployment, you'll need to add your own Anthropic API key
-or route calls through a small serverless function to keep it private.
+No canvas. No physics. No continuous animation loops.
+Stars: 55 static DOM elements with CSS twinkle.
+Waves: CSS keyframe breathing overlay.
+Shooting stars: rare DOM elements created and removed via setTimeout.
+One requestAnimationFrame call only during the message release animation.

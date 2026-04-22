@@ -1,4 +1,3 @@
-/* ── Message pools ─────────────────────────────────── */
 const pool = [
   "you've been carrying this for so long you forgot it wasn't always there. it wasn't always there.",
   "somewhere tonight someone is sitting exactly like you are. same hour. same weight. different room.",
@@ -119,18 +118,18 @@ const reflectQs = [
 ];
 
 const closureLines = [
-  "it's okay to leave this here.",
-  "you don't have to hold onto this anymore.",
-  "something has shifted. even if it's quiet, it's real.",
+  "it\'s okay to leave this here.",
+  "you don\'t have to hold onto this anymore.",
+  "something has shifted. even if it\'s quiet, it\'s real.",
   "whatever just moved through you — it was allowed to."
 ];
 
 let userLights = [];
-let lightIdx = 0;
-let shuffled = [...pool].sort(() => Math.random() - 0.5);
+let lightIdx   = 0;
+let shuffled   = [...pool].sort(() => Math.random() - 0.5);
 let currentThought = '';
 
-/* ── Focus management ─────────────────────────────── */
+/* ── Focus management ───────────────────────────── */
 const focusMap = {
   's-home':        () => document.querySelector('#s-home .btn-primary'),
   's-write':       () => document.getElementById('thought-input'),
@@ -142,15 +141,15 @@ const focusMap = {
   's-light-sent':  () => document.querySelector('#s-light-sent .stay-msg'),
 };
 
-/* ── Screen transitions ───────────────────────────── */
+/* ── Screen transitions ─────────────────────────── */
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   el.classList.add('active');
 
   if (id === 's-write') {
-    const p = document.getElementById('write-prompt');
-    p.textContent = writePrompts[Math.floor(Math.random() * writePrompts.length)];
+    document.getElementById('write-prompt').textContent =
+      writePrompts[Math.floor(Math.random() * writePrompts.length)];
   }
 
   if (id === 's-find') showLight();
@@ -168,14 +167,14 @@ function goTo(id) {
 
   const getter = focusMap[id];
   if (getter) setTimeout(() => {
-    const el = getter();
-    if (!el) return;
-    if (!el.getAttribute('tabindex')) el.setAttribute('tabindex', '-1');
-    el.focus({ preventScroll: false });
+    const target = getter();
+    if (!target) return;
+    if (!target.getAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: false });
   }, 160);
 }
 
-/* ── Lights ───────────────────────────────────────── */
+/* ── Lights ─────────────────────────────────────── */
 function showLight() {
   const box = document.getElementById('light-msg');
   box.style.opacity = 0;
@@ -183,7 +182,7 @@ function showLight() {
     const all = [...shuffled, ...userLights];
     box.textContent = all[lightIdx % all.length];
     box.style.opacity = 1;
-  }, 400);
+  }, 450);
 }
 
 function doLeaveLight() {
@@ -194,7 +193,7 @@ function doLeaveLight() {
   goTo('s-light-sent');
 }
 
-/* ── Reflect flow ─────────────────────────────────── */
+/* ── Reflect ────────────────────────────────────── */
 async function doReflect() {
   const txt = document.getElementById('thought-input').value.trim();
   if (!txt) return;
@@ -239,19 +238,33 @@ async function doReflect() {
   document.getElementById('btn-continue').disabled = false;
 }
 
-/* ── Release — message drifts into sea ───────────── */
+/* ── Release — CSS drift animation, no canvas ─── */
 function doRelease() {
   const txt = currentThought;
-  /* Show release screen (transparent — world canvas shows through) */
   goTo('s-release');
-  /* Trigger world.js animation */
-  if (typeof releaseMessage === 'function') releaseMessage(txt);
-  /* goTo('s-closure') is called by world.js after dissolve completes */
+
+  const wrap = document.getElementById('release-msg-wrap');
+  const msg  = document.getElementById('release-msg-text');
+  msg.textContent = txt;
+
+  /* Reset then trigger CSS animation */
+  wrap.style.animation = 'none';
+  wrap.style.opacity = '0';
+  wrap.style.top = '35%';
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      wrap.style.animation = 'msgdrift 5.5s ease forwards';
+    });
+  });
+
+  /* After drift completes, show closure */
+  setTimeout(() => goTo('s-closure'), 5800);
 }
 
 function doStay() { goTo('s-stay'); }
 
-/* ── Utilities ────────────────────────────────────── */
+/* ── Utilities ──────────────────────────────────── */
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
 async function typeText(el, text, delay = 38) {

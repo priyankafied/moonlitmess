@@ -36,12 +36,10 @@ body {
 canvas#sky {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
-  z-index: 1;  /* sits over scene-bg, under ocean/moon/vignette */
-  opacity: 0.55; /* let bg image show through — stars overlay gently */
-  mix-blend-mode: screen;
+  z-index: 0;   /* base layer — renders full scene */
 }
 
 /* ── Vignette — centers visual attention ───────────── */
@@ -80,16 +78,7 @@ main {
 }
 
 /* ── Scene background — reference image ─────────────── */
-#scene-bg {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  background-image: url('bg.jpg');
-  background-size: cover;
-  background-position: center 15%;
-  background-repeat: no-repeat;
-  filter: brightness(0.60) saturate(1.20) hue-rotate(-6deg);
-}
+/* scene-bg removed — canvas handles full scene */
 
 /* ── Ocean layer ─────────────────────────────────────── */
 #ocean-layer {
@@ -120,15 +109,15 @@ main {
 #ocean-shimmer {
   position: absolute;
   inset: 0;
+  /* Very faint shimmer on top of canvas ocean — barely perceptible */
   background: linear-gradient(
     180deg,
     rgba(30, 70, 140, 0.00) 0%,
-    rgba(40, 80, 160, 0.07) 25%,
-    rgba(50, 95, 175, 0.12) 50%,
-    rgba(35, 75, 148, 0.08) 75%,
-    rgba(15, 45, 100, 0.04) 100%
+    rgba(40, 85, 158, 0.04) 40%,
+    rgba(50, 95, 170, 0.06) 65%,
+    rgba(30, 70, 140, 0.03) 100%
   );
-  animation: oceanbreath 12s ease-in-out infinite;
+  animation: oceanbreath 13s ease-in-out infinite;
 }
 
 @keyframes oceanbreath {
@@ -137,31 +126,9 @@ main {
 }
 
 /* Moonpath reflection — centered, tapers from narrow top to wide bottom */
-#moonpath-glow {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 22%;
-  height: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(220, 238, 255, 0.00) 0%,
-    rgba(220, 238, 255, 0.03) 15%,
-    rgba(225, 240, 255, 0.08) 35%,
-    rgba(230, 243, 255, 0.14) 55%,
-    rgba(225, 240, 255, 0.10) 75%,
-    rgba(215, 232, 255, 0.05) 92%,
-    rgba(210, 228, 255, 0.02) 100%
-  );
-  /* Narrow at horizon, wider toward camera — matches reference photo */
-  clip-path: polygon(44% 0%, 56% 0%, 100% 100%, 0% 100%);
-  animation: moonpathpulse 9s ease-in-out infinite;
-  mix-blend-mode: screen;
-}
+/* moonpath drawn on canvas */
 
-@keyframes moonpathpulse {
-  0%, 100% { opacity: 0.65; transform: translateX(-50%) scaleX(1.00); }
+
   50%       { opacity: 1.00; transform: translateX(-50%) scaleX(1.08); }
 }
 
@@ -189,96 +156,17 @@ main {
   50%       { opacity: 1.0; }
 }
 
-/* ── Moon scene — CSS-rendered cinematic moon ────────── */
-#moon-scene {
-  position: fixed;
-  /* Centre horizontally, upper area vertically */
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 58%;
-  z-index: 1;
-  pointer-events: none;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-}
 
 /* Outer atmospheric bloom — wider, matches reference moon's glow */
-#moon-halo-outer {
-  position: absolute;
-  top: 4%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: clamp(280px, 42vw, 520px);
-  height: clamp(280px, 42vw, 520px);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(190, 215, 255, 0.08) 0%,
-    rgba(165, 195, 248, 0.04) 40%,
-    rgba(140, 175, 240, 0.015) 65%,
-    transparent 80%
-  );
-  animation: moonaura 13s ease-in-out infinite;
-}
+
 
 /* Inner glow ring — tighter, brighter */
-#moon-halo-inner {
-  position: absolute;
-  top: 4%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: clamp(160px, 22vw, 280px);
-  height: clamp(160px, 22vw, 280px);
-  border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    rgba(220, 235, 255, 0.18) 0%,
-    rgba(200, 220, 255, 0.09) 40%,
-    rgba(180, 205, 252, 0.03) 68%,
-    transparent 80%
-  );
-  animation: moonaura 13s ease-in-out 1.8s infinite;
-}
 
-@keyframes moonaura {
-  0%, 100% { opacity: 0.65; transform: translateX(-50%) scale(1.00); }
+
   50%       { opacity: 1.00; transform: translateX(-50%) scale(1.05); }
 }
 
 /* Moon body — cinematic, matches reference: large, luminous, natural texture */
-#moon-body {
-  position: absolute;
-  top: 4%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: clamp(90px, 12vw, 160px);
-  height: clamp(90px, 12vw, 160px);
-  border-radius: 50%;
-  /* Reference moon: very bright silvery-white core, subtle blue-grey edge */
-  background:
-    radial-gradient(circle at 44% 40%,
-      #ffffff      0%,
-      #f0f4ff     12%,
-      #dce6ff     28%,
-      #baced8     48%,
-      #92aac5     68%,
-      #6e8fb8     85%,
-      #5578a8    100%
-    );
-  box-shadow:
-    0 0 0 2px rgba(255,255,255,0.12),
-    /* Sharp inner glow */
-    0 0 14px  rgba(210, 230, 255, 0.65),
-    /* Mid bloom */
-    0 0 38px  rgba(190, 215, 255, 0.38),
-    /* Soft outer halo */
-    0 0 80px  rgba(170, 200, 250, 0.20),
-    /* Atmospheric scatter */
-    0 0 160px rgba(150, 185, 240, 0.10),
-    0 0 280px rgba(130, 170, 230, 0.05);
-}
 
 /* Crater / surface texture — makes it feel like a real moon */
 #moon-body::before {
@@ -797,9 +685,7 @@ textarea:focus {
   }
 
   /* Moon is now part of the fixed scene layer, not in content flow */
-  #moon-body     { width: clamp(100px, 13vw, 160px); height: clamp(100px, 13vw, 160px); }
-  #moon-halo-inner { width: clamp(180px, 24vw, 280px); height: clamp(180px, 24vw, 280px); }
-  #moon-halo-outer { width: clamp(280px, 40vw, 480px); height: clamp(280px, 40vw, 480px); }
+      
 
   .site-name {
     font-size: 12px;
@@ -875,8 +761,7 @@ textarea:focus {
     padding: 0 48px;
   }
 
-  #moon-body { width: clamp(120px, 14vw, 180px); height: clamp(120px, 14vw, 180px); }
-
+  
   .home-quiet   { font-size: 20px; }
   .home-carry   { font-size: 14px; }
   .home-primary { font-size: 19px; padding: 16px 54px; }
@@ -887,6 +772,21 @@ textarea:focus {
   .stay-card     { max-width: 580px; }
 }
 
+
+/* ── Sit with it — navigation ───────────────────────── */
+.sit-nav {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  opacity: 0;
+  transition: opacity 1.8s ease;
+  margin-top: 8px;
+}
+
+.sit-nav.visible {
+  opacity: 1;
+}
 /* ── Mobile ─────────────────────────────────────────── */
 @media (max-width: 480px) {
   .z { padding: 44px 0 60px; }

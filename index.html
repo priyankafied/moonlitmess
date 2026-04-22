@@ -11,22 +11,13 @@
 </head>
 <body>
   <div id="app">
+    <!-- Single canvas renders everything: sky, moon, stars, ocean -->
     <canvas id="sky" aria-hidden="true"></canvas>
 
-    <!-- Scene background — full reference image -->
-    <div id="scene-bg" aria-hidden="true"></div>
-
-    <!-- Ocean layer — sits over bottom half, CSS shimmer only -->
+    <!-- Ocean shimmer overlay — CSS only, sits over canvas sea area -->
     <div id="ocean-layer" aria-hidden="true">
       <div id="ocean-shimmer" aria-hidden="true"></div>
       <div id="moonpath-glow" aria-hidden="true"></div>
-    </div>
-
-    <!-- Moon overlay — CSS-rendered, matches reference -->
-    <div id="moon-scene" aria-hidden="true">
-      <div id="moon-halo-outer"></div>
-      <div id="moon-halo-inner"></div>
-      <div id="moon-body"></div>
     </div>
 
     <div class="vignette" aria-hidden="true"></div>
@@ -117,6 +108,10 @@
           <div class="sit-wrap">
             <p class="sit-written" id="sit-written"></p>
             <p class="sit-message" id="sit-message" aria-live="polite"></p>
+            <div class="sit-nav" id="sit-nav">
+              <button class="btn-moon ghost" onclick="goTo('s-stay')">go back</button>
+              <button class="btn-moon" onclick="goTo('s0')">return home</button>
+            </div>
           </div>
         </div>
 

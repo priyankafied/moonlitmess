@@ -216,7 +216,6 @@ function doStay() {
 }
 
 function doSitWithIt() {
-  /* Mirror the written text into sit screen */
   const sitWritten = document.getElementById('sit-written');
   if (sitWritten && currentThought) {
     const preview = currentThought.length > 200
@@ -224,17 +223,22 @@ function doSitWithIt() {
       : currentThought;
     sitWritten.textContent = preview;
   }
-  /* Reset message state */
   const sitMsg = document.getElementById('sit-message');
+  const sitNav = document.getElementById('sit-nav');
   if (sitMsg) {
     sitMsg.classList.remove('revealed');
     sitMsg.textContent = 'Acknowledge and accept your feelings instead of avoiding, suppressing, or judging them.';
   }
+  if (sitNav) sitNav.classList.remove('visible');
   goTo('s-sit');
-  /* Reveal message slowly — 6 seconds of stillness first */
+  /* Message fades in after 6s of stillness */
   setTimeout(() => {
     if (sitMsg) sitMsg.classList.add('revealed');
   }, 6000);
+  /* Navigation appears 3s after the message — never a dead end */
+  setTimeout(() => {
+    if (sitNav) sitNav.classList.add('visible');
+  }, 9500);
 }
 
 function sleep(ms) {

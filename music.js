@@ -1,149 +1,146 @@
 let aCtx = null, mOn = false, mNodes = [], chordTimer = null;
 
 /*
-  Audio architecture:
-  oscillators → individual gain (envelope) → chorus detune layer
-             → reverb send (convolver) → wet gain
-             → master compressor → master gain → destination
-  + filtered vinyl noise → master
+  Minimal ambient sound — airy, sparse, ignorable.
+  Architecture: single sine oscillator per note (no chorus layers)
+  → gentle low-pass → soft reverb → master gain
+  + barely audible high-frequency shimmer
+  + very faint vinyl noise (almost subliminal)
 
-  This gives warmth, presence and space without harshness or clipping.
+  Philosophy: sound you notice only after sitting with it.
+  No chord density. Long silences. Open intervals only.
 */
 
 function buildMusic() {
   if (!aCtx) aCtx = new (window.AudioContext || window.webkitAudioContext)();
   if (aCtx.state === 'suspended') aCtx.resume();
 
-  /* Clear any previous nodes */
   mNodes.forEach(n => { try { n.stop(); } catch (e) {} });
   mNodes = [];
   if (chordTimer) { clearTimeout(chordTimer); chordTimer = null; }
 
-  /* ── Master dynamics ─────────────────────────────── */
-  const comp = aCtx.createDynamicsCompressor();
-  comp.threshold.value = -18;
-  comp.knee.value      = 12;
-  comp.ratio.value     = 3;
-  comp.attack.value    = 0.25;
-  comp.release.value   = 0.6;
-  comp.connect(aCtx.destination);
-
+  /* ── Master — very low gain, slow rise ───────────── */
   const master = aCtx.createGain();
   master.gain.setValueAtTime(0, aCtx.currentTime);
-  /* Cinematic fade-in over 4 seconds */
-  master.gain.linearRampToValueAtTime(0.72, aCtx.currentTime + 4);
-  master.connect(comp);
+  /* Slow breath-in over 8 seconds — barely noticeable on arrival */
+  master.gain.linearRampToValueAtTime(0.28, aCtx.currentTime + 8);
+  master.connect(aCtx.destination);
   mNodes.push(master);
 
-  /* ── Reverb (simple convolution impulse) ─────────── */
-  const reverbLen = aCtx.sampleRate * 3.2;
-  const revBuf = aCtx.createBuffer(2, reverbLen, aCtx.sampleRate);
+  /* ── Warm low-pass — rolls off everything harsh ──── */
+  const lp = aCtx.createBiquadFilter();
+  lp.type = 'lowpass';
+  lp.frequency.value = 600;
+  lp.Q.value = 0.4;
+  lp.connect(master);
+
+  /* ── Simple convolution reverb — creates space ───── */
+  const revSecs = 5;
+  const revBuf = aCtx.createBuffer(2, aCtx.sampleRate * revSecs, aCtx.sampleRate);
   for (let ch = 0; ch < 2; ch++) {
     const d = revBuf.getChannelData(ch);
-    for (let i = 0; i < reverbLen; i++) {
-      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLen, 2.4);
+    for (let i = 0; i < d.length; i++) {
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / d.length, 3.5);
     }
   }
   const reverb = aCtx.createConvolver();
   reverb.buffer = revBuf;
-  const wetGain = aCtx.createGain();
-  wetGain.gain.value = 0.38;
-  reverb.connect(wetGain);
-  wetGain.connect(master);
+  const wetG = aCtx.createGain();
+  wetG.gain.value = 0.55;   /* High reverb ratio = more "room", less directness */
+  reverb.connect(wetG);
+  wetG.connect(master);
 
-  /* ── Low-pass for warmth ─────────────────────────── */
-  const lp = aCtx.createBiquadFilter();
-  lp.type = 'lowpass';
-  lp.frequency.value = 1100;
-  lp.Q.value = 0.7;
-
-  /* Dry path: lp → master, also send to reverb */
-  lp.connect(master);
-  lp.connect(reverb);
-
-  /* ── Chord sequences ─────────────────────────────── */
   /*
-    Dm9 → Fmaj7 → Am9 → Gmaj7
-    All in low register for body, not brightness.
+    Open, non-cinematic intervals:
+    Perfect 5ths and 4ths only — no thirds, no minor chords.
+    These feel spacious, not emotional.
+    Two notes maximum per "chord". Long rests between.
   */
-  const chords = [
-    [146.83, 174.61, 220.00, 261.63, 311.13],  /* Dm9  */
-    [174.61, 207.65, 261.63, 329.63, 392.00],  /* Fmaj7 */
-    [220.00, 261.63, 329.63, 392.00, 440.00],  /* Am9  */
-    [195.99, 246.94, 293.66, 369.99, 440.00],  /* Gmaj7 */
+  const pairs = [
+    [130.81, 196.00],   /* C3 + G3 — open 5th */
+    [146.83, 220.00],   /* D3 + A3 — open 5th */
+    [110.00, 164.81],   /* A2 + E3 — open 5th */
+    [123.47, 185.00],   /* B2 + F#3 — open 5th */
+    [130.81, null],     /* single note — just C3 alone */
+    [110.00, null],     /* single note — just A2 alone */
   ];
-  let ci = 0;
 
-  function playChord() {
+  let pi = 0;
+
+  function playPair() {
     if (!mOn) return;
-    const chord = chords[ci++ % chords.length];
+    const pair = pairs[pi++ % pairs.length];
     const now = aCtx.currentTime;
-    const noteDur = 6.5;
-    const gapBetween = 5.2;
+    const noteDur = 8;   /* each note sustains 8 seconds */
 
-    chord.forEach((freq, fi) => {
-      /* Slight stagger per note for gentle arpeggiation */
-      const stagger = fi * 0.07;
-
-      /* Main oscillator */
+    pair.forEach(freq => {
+      if (!freq) return;
       const o = aCtx.createOscillator();
       const g = aCtx.createGain();
       o.type = 'sine';
       o.frequency.value = freq;
-      g.gain.setValueAtTime(0, now + stagger);
-      g.gain.linearRampToValueAtTime(0.22, now + stagger + 1.8);
-      g.gain.linearRampToValueAtTime(0.14, now + stagger + 3.5);
-      g.gain.linearRampToValueAtTime(0,    now + stagger + noteDur);
-      o.connect(g); g.connect(lp);
-      o.start(now + stagger);
-      o.stop(now + stagger + noteDur + 0.1);
-      mNodes.push(o);
 
-      /* Detuned chorus layer (triangle, -7 cents) for warmth */
-      const o2 = aCtx.createOscillator();
-      const g2 = aCtx.createGain();
-      o2.type = 'triangle';
-      o2.frequency.value = freq * Math.pow(2, -7/1200);
-      g2.gain.setValueAtTime(0, now + stagger);
-      g2.gain.linearRampToValueAtTime(0.08, now + stagger + 2.2);
-      g2.gain.linearRampToValueAtTime(0,    now + stagger + noteDur);
-      o2.connect(g2); g2.connect(lp);
-      o2.start(now + stagger);
-      o2.stop(now + stagger + noteDur + 0.1);
-      mNodes.push(o2);
+      /* Very slow attack/release — no percussive quality */
+      g.gain.setValueAtTime(0, now);
+      g.gain.linearRampToValueAtTime(0.18, now + 3.5);  /* 3.5s attack */
+      g.gain.linearRampToValueAtTime(0.12, now + 5.5);
+      g.gain.linearRampToValueAtTime(0, now + noteDur);
+
+      o.connect(g);
+      g.connect(lp);
+      g.connect(reverb);
+      o.start(now);
+      o.stop(now + noteDur + 0.1);
+      mNodes.push(o);
     });
 
-    chordTimer = setTimeout(playChord, gapBetween * 1000);
+    /* Long gap between pairs — silence is part of the texture */
+    const gap = 9000 + Math.random() * 4000;   /* 9–13 seconds between events */
+    chordTimer = setTimeout(playPair, gap);
   }
 
-  /* ── Vinyl / room noise ──────────────────────────── */
-  const noiseDur = aCtx.sampleRate * 3;
-  const nBuf = aCtx.createBuffer(1, noiseDur, aCtx.sampleRate);
+  /* ── Shimmer — very faint high partial, barely there */
+  function addShimmer() {
+    if (!mOn) return;
+    const freq = [523.25, 659.25, 783.99][Math.floor(Math.random() * 3)]; /* C5, E5, G5 */
+    const o = aCtx.createOscillator();
+    const g = aCtx.createGain();
+    o.type = 'sine';
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(0, aCtx.currentTime);
+    g.gain.linearRampToValueAtTime(0.025, aCtx.currentTime + 2);
+    g.gain.linearRampToValueAtTime(0, aCtx.currentTime + 7);
+    o.connect(g);
+    g.connect(reverb);  /* only through reverb, not direct — very diffuse */
+    o.start();
+    o.stop(aCtx.currentTime + 7.5);
+    mNodes.push(o);
+    const nextShimmer = 14000 + Math.random() * 8000;  /* 14–22s between shimmers */
+    chordTimer = setTimeout(addShimmer, nextShimmer);
+  }
+
+  /* ── Vinyl room noise — almost subliminal ─────────── */
+  const nBuf = aCtx.createBuffer(1, aCtx.sampleRate * 4, aCtx.sampleRate);
   const nd = nBuf.getChannelData(0);
-  for (let i = 0; i < noiseDur; i++) nd[i] = (Math.random() * 2 - 1) * 0.015;
+  for (let i = 0; i < nd.length; i++) nd[i] = (Math.random() * 2 - 1) * 0.008;
   const noise = aCtx.createBufferSource();
   noise.buffer = nBuf;
   noise.loop = true;
-
   const nlp = aCtx.createBiquadFilter();
-  nlp.type = 'lowpass';
-  nlp.frequency.value = 320;
-
-  const nhp = aCtx.createBiquadFilter();
-  nhp.type = 'highpass';
-  nhp.frequency.value = 80;
-
+  nlp.type = 'bandpass';
+  nlp.frequency.value = 200;
+  nlp.Q.value = 0.5;
   const ng = aCtx.createGain();
-  ng.gain.value = 0.045;
-
+  ng.gain.value = 0.03;
   noise.connect(nlp);
-  nlp.connect(nhp);
-  nhp.connect(ng);
+  nlp.connect(ng);
   ng.connect(master);
   noise.start();
   mNodes.push(noise);
 
-  playChord();
+  /* Start with a short silence before anything plays */
+  chordTimer = setTimeout(playPair, 2000);
+  setTimeout(addShimmer, 6000);
 }
 
 function toggleMusic() {
@@ -153,20 +150,20 @@ function toggleMusic() {
     buildMusic();
     b.textContent = '♬ on';
     b.style.color = '#e8d98a';
-    b.style.borderColor = 'rgba(232,217,138,0.38)';
+    b.style.borderColor = 'rgba(232,217,138,0.36)';
   } else {
     mOn = false;
     if (chordTimer) { clearTimeout(chordTimer); chordTimer = null; }
-    /* Fade out gracefully before stopping */
+    /* Fade out over 2s before killing nodes */
     if (aCtx) {
-      const fadeGain = aCtx.createGain();
-      fadeGain.gain.setValueAtTime(1, aCtx.currentTime);
-      fadeGain.gain.linearRampToValueAtTime(0, aCtx.currentTime + 1.2);
+      const fadeOut = aCtx.createGain();
+      fadeOut.gain.setValueAtTime(1, aCtx.currentTime);
+      fadeOut.gain.linearRampToValueAtTime(0, aCtx.currentTime + 2);
     }
     setTimeout(() => {
       mNodes.forEach(n => { try { n.stop(); } catch (e) {} });
       mNodes = [];
-    }, 1300);
+    }, 2200);
     b.textContent = '♩ off';
     b.style.color = '#5a5238';
     b.style.borderColor = 'rgba(232,217,138,0.12)';

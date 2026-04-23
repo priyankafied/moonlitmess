@@ -1,13 +1,7 @@
 /*
   scene.js — Moonlit Mess
-  Pure CSS scene rendered at infinite resolution.
-  No photos. No canvas. No pixelation possible.
-
-  Responsibilities:
-  1. Calculate real lunar phase
-  2. Apply phase shadow to moon via inline SVG clip
-  3. Randomise water ripple timings
-  4. Spawn rare shooting stars
+  Responsibilities: lunar phase shadow on moon, ripple timing, shooting stars.
+  No animations started here. The scene is still.
 */
 
 function getLunarPhase() {
@@ -17,39 +11,23 @@ function getLunarPhase() {
 }
 
 (function init() {
-  const phase = getLunarPhase();
-  applyPhaseShadow(phase);
-
-  /* Randomise ripple timings so water feels organic */
-  [
-    ['r1', 130 + Math.random()*40,  '24%', (7.5 + Math.random()*3).toFixed(1)+'s', '0s'   ],
-    ['r2', 200 + Math.random()*55,  '50%', (11  + Math.random()*3).toFixed(1)+'s', '2.1s' ],
-    ['r3', 290 + Math.random()*65,  '74%', (9   + Math.random()*3).toFixed(1)+'s', '4.0s' ],
-  ].forEach(([id, w, top, dur, delay]) => {
-    const el = document.getElementById(id);
-    if (!el) return;
-    el.style.width             = w + 'px';
-    el.style.top               = top;
-    el.style.animationDuration = dur;
-    el.style.animationDelay    = delay;
-  });
-
-  setTimeout(spawnShooter, 9000 + Math.random() * 9000);
+  applyPhaseShadow(getLunarPhase());
+  setTimeout(spawnShooter, 10000 + Math.random() * 10000);
 })();
 
 function applyPhaseShadow(phase) {
-  const moon   = document.getElementById('moon-body');
+  const moon   = document.getElementById('moon');
   const shadow = document.getElementById('moon-shadow');
   if (!moon || !shadow) return;
 
-  if (phase > 0.46 && phase < 0.54) return; /* full moon */
+  if (phase > 0.46 && phase < 0.54) return;  /* full moon */
 
   if (phase < 0.03 || phase > 0.97) {
     shadow.style.cssText = 'position:absolute;inset:0;border-radius:50%;background:rgba(3,2,8,0.90);';
     return;
   }
 
-  const R      = (moon.offsetWidth  || 80) / 2;
+  const R      = (moon.offsetWidth || 72) / 2;
   const S      = R * 2;
   const waxing = phase < 0.5;
   const t      = waxing ? phase * 2 : (phase - 0.5) * 2;
@@ -86,12 +64,13 @@ function spawnShooter() {
   shooterActive = true;
   const el  = document.createElement('div');
   el.className = 'mm-shooter';
-  const vw = window.innerWidth, vh = window.innerHeight;
-  const sx = vw * (0.06 + Math.random() * 0.55);
-  const sy = vh * (0.04 + Math.random() * 0.30);
+  const vw  = window.innerWidth;
+  const vh  = window.innerHeight;
+  const sx  = vw * (0.06 + Math.random() * 0.55);
+  const sy  = vh * (0.04 + Math.random() * 0.32);
   const ang = 14 + Math.random() * 20;
-  const len = 55 + Math.random() * 90;
-  const dur = (0.75 + Math.random() * 0.60).toFixed(2);
+  const len = 55 + Math.random() * 85;
+  const dur = (0.75 + Math.random() * 0.55).toFixed(2);
   el.style.left  = sx  + 'px';
   el.style.top   = sy  + 'px';
   el.style.width = len + 'px';
@@ -101,5 +80,5 @@ function spawnShooter() {
   const c = document.getElementById('shooters');
   if (c) c.appendChild(el);
   setTimeout(() => { el.remove(); shooterActive = false; }, (parseFloat(dur) + 0.5) * 1000);
-  setTimeout(spawnShooter, 15000 + Math.random() * 15000);
+  setTimeout(spawnShooter, 16000 + Math.random() * 16000);
 }

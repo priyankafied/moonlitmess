@@ -137,12 +137,17 @@ main {
 /* Wordmark — restrained serif, not logo */
 .wordmark {
   font-family: 'Cormorant Garamond', Georgia, serif;
-  font-weight: 300;
-  font-size: 14px;
-  letter-spacing: 0.26em;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.32em;
   text-transform: uppercase;
-  color: rgba(168, 155, 110, 0.50);
-  margin-bottom: 36px;
+  /* Brighter — reads against dark painting */
+  color: rgba(210, 195, 148, 0.72);
+  /* Text shadow anchors it against any background zone */
+  text-shadow: 0 1px 12px rgba(0,0,0,0.65);
+  /* Push it below the moon — moon sits top 25% of frame */
+  margin-top: 22vh;
+  margin-bottom: 14px;
   opacity: 0;
   animation: risefade 3s ease forwards;
 }
@@ -152,11 +157,12 @@ main {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(22px, 4vw, 30px);
-  color: rgba(215, 200, 158, 0.82);
+  font-size: clamp(26px, 4.5vw, 36px);
+  color: rgba(238, 225, 182, 0.94);
+  text-shadow: 0 1px 16px rgba(0,0,0,0.70), 0 0 40px rgba(0,0,0,0.30);
   letter-spacing: 0.02em;
   line-height: 1.4;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   opacity: 0;
   animation: risefade 3s ease 0.7s forwards;
 }
@@ -164,11 +170,12 @@ main {
 /* Secondary line — quieter */
 .home-line-2 {
   font-family: 'Crimson Pro', Georgia, serif;
-  font-weight: 300;
-  font-size: clamp(14px, 2.2vw, 16px);
-  color: rgba(142, 130, 95, 0.55);
+  font-weight: 400;
+  font-size: clamp(15px, 2.4vw, 18px);
+  color: rgba(195, 182, 142, 0.82);
+  text-shadow: 0 1px 10px rgba(0,0,0,0.60);
   letter-spacing: 0.06em;
-  margin-bottom: 54px;
+  margin-bottom: 48px;
   opacity: 0;
   animation: risefade 3s ease 1.5s forwards;
 }
@@ -189,23 +196,26 @@ main {
 }
 
 .threshold-btn {
-  background: transparent;
-  border: 0.5px solid rgba(200, 182, 118, 0.28);
-  border-radius: 2px;           /* barely rounded — feels like a card edge, not a pill */
-  color: rgba(200, 182, 118, 0.80);
+  /* Dark semi-transparent backing — anchors button against any bg zone */
+  background: rgba(0, 0, 0, 0.38);
+  border: 1px solid rgba(205, 188, 130, 0.52);
+  border-radius: 2px;
+  color: rgba(228, 212, 162, 0.96);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 400;
   font-size: 16px;
   letter-spacing: 0.10em;
   padding: 11px 36px;
   cursor: pointer;
-  transition: border-color 0.4s, color 0.4s, background 0.4s;
+  transition: border-color 0.3s, color 0.3s, background 0.3s;
+  /* Ensures readability regardless of bg zone */
+  text-shadow: 0 1px 6px rgba(0,0,0,0.50);
 }
 
 .threshold-btn:hover, .threshold-btn:focus-visible {
-  border-color: rgba(200, 182, 118, 0.55);
-  color: rgba(220, 205, 148, 0.95);
-  background: rgba(200, 182, 118, 0.04);
+  background: rgba(0, 0, 0, 0.52);
+  border-color: rgba(218, 200, 142, 0.80);
+  color: rgba(242, 228, 178, 1.00);
   outline: none;
 }
 
@@ -218,18 +228,19 @@ main {
 .threshold-ghost {
   background: transparent;
   border: none;
-  color: rgba(110, 100, 70, 0.50);
+  color: rgba(185, 170, 125, 0.78);
   font-family: 'Crimson Pro', Georgia, serif;
   font-style: italic;
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0.05em;
   cursor: pointer;
   padding: 4px 0;
-  transition: color 0.4s;
+  transition: color 0.3s;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.55);
 }
 
 .threshold-ghost:hover, .threshold-ghost:focus-visible {
-  color: rgba(160, 148, 108, 0.75);
+  color: rgba(215, 200, 155, 0.95);
   outline: none;
 }
 
@@ -237,7 +248,7 @@ main {
 .link-btn {
   background: transparent;
   border: none;
-  color: rgba(110, 100, 72, 0.55);
+  color: rgba(175, 160, 118, 0.75);
   font-family: 'Crimson Pro', Georgia, serif;
   font-style: italic;
   font-size: 15px;
@@ -246,10 +257,11 @@ main {
   padding: 4px 2px;
   transition: color 0.3s;
   text-decoration: none;
+  text-shadow: 0 1px 8px rgba(0,0,0,0.55);
 }
 
 .link-btn:hover, .link-btn:focus-visible {
-  color: rgba(168, 154, 108, 0.80);
+  color: rgba(215, 200, 158, 0.95);
   outline: none;
 }
 
@@ -270,7 +282,8 @@ main {
   font-weight: 300;
   font-style: italic;
   font-size: clamp(18px, 3.2vw, 24px);
-  color: rgba(190, 175, 132, 0.72);
+  color: rgba(222, 208, 165, 0.90);
+  text-shadow: 0 1px 12px rgba(0,0,0,0.65);
   text-align: center;
   line-height: 1.85;
   margin-bottom: 28px;
@@ -360,7 +373,7 @@ textarea:focus {
 .echo-thought {
   font-family: 'Caveat', cursive;
   font-size: 16px;
-  color: rgba(180, 165, 122, 0.32);
+  color: rgba(200, 185, 142, 0.52);
   text-align: center;
   line-height: 1.9;
   margin-bottom: 20px;
@@ -376,7 +389,8 @@ textarea:focus {
   font-weight: 300;
   font-style: italic;
   font-size: clamp(18px, 3.2vw, 22px);
-  color: rgba(192, 165, 100, 0.85);
+  color: rgba(225, 200, 135, 0.95);
+  text-shadow: 0 1px 12px rgba(0,0,0,0.65);
   text-align: center;
   line-height: 1.75;
   margin-bottom: 22px;
@@ -410,7 +424,8 @@ textarea:focus {
   font-weight: 300;
   font-style: italic;
   font-size: clamp(19px, 3.2vw, 24px);
-  color: rgba(175, 160, 118, 0.70);
+  color: rgba(215, 200, 158, 0.92);
+  text-shadow: 0 1px 12px rgba(0,0,0,0.65);
   text-align: center;
   line-height: 2;
   max-width: 360px;
@@ -454,7 +469,8 @@ textarea:focus {
 .stay-written {
   font-family: 'Caveat', cursive;
   font-size: 16px;
-  color: rgba(188, 172, 128, 0.45);
+  color: rgba(208, 192, 148, 0.72);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.55);
   text-align: center;
   line-height: 1.85;
   max-width: 360px;
@@ -489,14 +505,15 @@ textarea:focus {
   font-weight: 300;
   font-style: italic;
   font-size: clamp(16px, 2.8vw, 20px);
-  color: rgba(170, 155, 112, 0.0);
+  color: rgba(200, 185, 140, 0.0);
   text-align: center;
   line-height: 2;
   max-width: 360px;
   transition: color 4.5s ease;
 }
 
-.sit-message.revealed { color: rgba(170, 155, 112, 0.70); }
+.sit-message.revealed { color: rgba(215, 200, 158, 0.90);
+  text-shadow: 0 1px 10px rgba(0,0,0,0.60); }
 
 @keyframes stillfade { from { opacity: 0; } to { opacity: 1; } }
 
@@ -525,16 +542,17 @@ textarea:focus {
 }
 
 .light-card {
-  background: rgba(10, 14, 9, 0.55);
-  border-top: 0.5px solid rgba(100, 130, 90, 0.18);
-  border-bottom: 0.5px solid rgba(100, 130, 90, 0.10);
+  background: rgba(4, 8, 12, 0.62);
+  border-top: 0.5px solid rgba(120, 150, 108, 0.30);
+  border-bottom: 0.5px solid rgba(120, 150, 108, 0.18);
   padding: 28px 26px;
   width: 100%;
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
   font-style: italic;
   font-size: clamp(16px, 2.5vw, 20px);
-  color: rgba(162, 182, 148, 0.80);
+  color: rgba(188, 208, 172, 0.92);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.50);
   line-height: 2;
   text-align: center;
   margin-bottom: 24px;
@@ -599,9 +617,9 @@ textarea:focus {
           align-items: center; }
 
   /* Home: deliberate desktop scale */
-  .wordmark    { font-size: 11px; letter-spacing: 0.32em; margin-bottom: 44px; }
-  .home-line-1 { font-size: 38px; line-height: 1.25; margin-bottom: 16px; }
-  .home-line-2 { font-size: 15px; letter-spacing: 0.07em; margin-bottom: 68px; }
+  .wordmark    { font-size: 12px; letter-spacing: 0.32em; margin-bottom: 16px; margin-top: 24vh; }
+  .home-line-1 { font-size: 40px; line-height: 1.25; margin-bottom: 12px; }
+  .home-line-2 { font-size: 17px; letter-spacing: 0.07em; margin-bottom: 52px; }
   .home-threshold { gap: 18px; }
   .threshold-btn       { font-size: 16px; padding: 12px 44px; letter-spacing: 0.11em; }
   .threshold-btn.slim  { font-size: 14px; padding: 10px 28px; }
@@ -660,7 +678,7 @@ textarea:focus {
   main  { padding: 0 72px; }
 
   /* Home */
-  .home-line-1 { font-size: 44px; margin-bottom: 18px; }
+  .home-line-1 { font-size: 46px; margin-bottom: 14px; }
   .home-line-2 { font-size: 16px; margin-bottom: 76px; }
   .threshold-btn { font-size: 17px; padding: 13px 50px; }
 
@@ -688,9 +706,9 @@ textarea:focus {
   .threshold-btn { width: 220px; text-align: center; }
 
   /* Boost small text for legibility */
-  .wordmark    { font-size: 11px; }
-  .home-line-1 { font-size: 26px; }
-  .home-line-2 { font-size: 14px; }
+  .wordmark    { font-size: 11px; margin-top: 18vh; margin-bottom: 10px; }
+  .home-line-1 { font-size: 28px; }
+  .home-line-2 { font-size: 15px; }
   .threshold-btn       { font-size: 16px; padding: 12px 0; }
   .threshold-ghost     { font-size: 14px; }
 

@@ -379,13 +379,14 @@ textarea:focus {
   margin-top: 9px;
   font-family: 'Crimson Pro', Georgia, serif;
   font-style: italic;
-  font-size: 12px;
-  color: rgba(100, 90, 60, 0.45);
+  font-size: 13px;
+  color: rgba(155, 142, 102, 0.68);
+  text-shadow: 0 1px 8px rgba(0,0,0,0.50);
   letter-spacing: 0.06em;
   text-align: center;
 }
 
-.shared-note { color: rgba(80, 100, 72, 0.45); }
+.shared-note { color: rgba(130, 155, 112, 0.72); text-shadow: 0 1px 8px rgba(0,0,0,0.50); }
 
 /* ══════════════════════════════════════════════════════
    REFLECT SCREEN
@@ -401,7 +402,7 @@ textarea:focus {
 .echo-thought {
   font-family: 'Caveat', cursive;
   font-size: 16px;
-  color: rgba(205, 190, 148, 0.62);
+  color: rgba(215, 200, 158, 0.72);
   text-align: center;
   line-height: 1.9;
   margin-bottom: 20px;
@@ -497,7 +498,7 @@ textarea:focus {
 .stay-written {
   font-family: 'Caveat', cursive;
   font-size: 16px;
-  color: rgba(215, 200, 155, 0.80);
+  color: rgba(222, 208, 165, 0.86);
   text-shadow: 0 1px 8px rgba(0,0,0,0.55);
   text-align: center;
   line-height: 1.85;
@@ -519,10 +520,11 @@ textarea:focus {
 
 .sit-written {
   font-family: 'Caveat', cursive;
-  font-size: 16px;
-  color: rgba(180, 165, 120, 0.35);
+  font-size: 19px;
+  color: rgba(210, 195, 152, 0.72);
+  text-shadow: 0 1px 10px rgba(0,0,0,0.60);
   text-align: center;
-  line-height: 1.9;
+  line-height: 2.0;
   word-break: break-word;
   opacity: 0;
   animation: stillfade 2.4s ease forwards;
@@ -532,7 +534,7 @@ textarea:focus {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(18px, 3vw, 22px);
+  font-size: clamp(19px, 3.2vw, 24px);
   color: rgba(200, 185, 140, 0.0);
   text-align: center;
   line-height: 2;
@@ -540,8 +542,10 @@ textarea:focus {
   transition: color 4.5s ease;
 }
 
-.sit-message.revealed { color: rgba(225, 210, 168, 0.94);
-  text-shadow: 0 1px 10px rgba(0,0,0,0.60); }
+.sit-message.revealed {
+  color: rgba(232, 218, 175, 0.96);
+  text-shadow: 0 1px 14px rgba(0,0,0,0.70);
+}
 
 @keyframes stillfade { from { opacity: 0; } to { opacity: 1; } }
 
@@ -560,12 +564,14 @@ textarea:focus {
    FIND A LIGHT
 ══════════════════════════════════════════════════════ */
 .light-label {
-  font-family: 'Crimson Pro', Georgia, serif;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 300;
   font-style: italic;
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  color: rgba(100, 115, 90, 0.50);
-  margin-bottom: 16px;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  color: rgba(168, 188, 150, 0.85);
+  text-shadow: 0 1px 10px rgba(0,0,0,0.60);
+  margin-bottom: 18px;
   text-align: center;
 }
 
@@ -578,8 +584,8 @@ textarea:focus {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(16px, 2.5vw, 20px);
-  color: rgba(188, 208, 172, 0.92);
+  font-size: clamp(18px, 2.8vw, 22px);
+  color: rgba(200, 220, 185, 0.96);
   text-shadow: 0 1px 8px rgba(0,0,0,0.50);
   line-height: 2;
   text-align: center;
@@ -680,11 +686,11 @@ textarea:focus {
   .stay-written { font-size: 18px; }
   .stay-orb     { width: 64px; height: 64px; }
   .sit-message  { font-size: 22px; max-width: 460px; }
-  .sit-written  { font-size: 18px; }
+  .sit-written  { font-size: 20px; }
 
   /* Light card */
   .light-card   { font-size: 22px; padding: 32px 36px; max-width: 560px; }
-  .light-label  { font-size: 12px; }
+  .light-label  { font-size: 17px; }
 }
 
 /* ══════════════════════════════════════════════════════
@@ -746,7 +752,7 @@ textarea:focus {
   textarea        { font-size: 18px; padding: 16px 18px; min-height: 120px; }
   .note-footer    { font-size: 12px; }
 
-  .echo-thought   { font-size: 15px; }
+  .echo-thought   { font-size: 17px; }
   .reflect-q      { font-size: 20px; max-width: 100%; }
 
   .closure-text   { font-size: 20px; max-width: 100%; }
@@ -755,6 +761,10 @@ textarea:focus {
   .sit-written    { font-size: 15px; }
   .sit-message    { font-size: 18px; max-width: 100%; }
 
-  .light-card     { font-size: 18px; padding: 22px 20px; }
+  .light-card     { font-size: 19px; padding: 22px 20px; }
+  .light-label    { font-size: 15px; }
+  .sit-written    { font-size: 17px; }
+  .note-footer    { font-size: 13px; }
+
   .light-label    { font-size: 12px; }
 }

@@ -196,7 +196,7 @@ function doSitWithIt() {
   if (sw && currentThought) sw.textContent = currentThought.length > 200 ? currentThought.slice(0,200)+'…' : currentThought;
   const sm = document.getElementById('sit-message');
   const sn = document.getElementById('sit-nav');
-  if (sm) { sm.classList.remove('revealed'); sm.textContent = 'Acknowledge and accept your feelings instead of avoiding, suppressing, or judging them.'; }
+  if (sm) { sm.classList.remove('revealed'); sm.textContent = 'You don\'t have to do anything with this right now. It can just be here.'; }
   if (sn) sn.classList.remove('visible');
   goTo('s-sit');
   setTimeout(() => { if (sm) sm.classList.add('revealed'); }, 6000);

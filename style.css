@@ -53,33 +53,56 @@ body {
   filter: brightness(0.78);
 }
 
-/* ── Water shimmer — lower 45% of screen only ─────────
-   A CSS mask that drifts very slowly across the water
-   area. Creates a barely-perceptible light variation —
-   the sense that the water is alive, not the knowledge
-   of it. Duration 28s — nearly imperceptible motion.
+/* ── Water shimmer ─────────────────────────────────────
+   Two layered effects on the ocean area only:
+   1. A diagonal shimmer band that slowly crosses — 
+      like moonlight catching a swell
+   2. A very gentle brightness breathe on the whole area
+   Both so slow and faint they're felt not seen.
 ───────────────────────────────────────────────────── */
 #water-shimmer {
   position: absolute;
   left: 0; right: 0;
   bottom: 0;
-  height: 45%;
+  height: 48%;
   pointer-events: none;
-  /* A gradient mask that moves across the water */
+  overflow: hidden;
+}
+
+/* Layer A: diagonal shimmer band drifts slowly right */
+#water-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background: linear-gradient(
-    105deg,
-    transparent                      0%,
-    rgba(180, 210, 240, 0.022)       28%,
-    rgba(200, 225, 248, 0.038)       50%,
-    rgba(180, 210, 240, 0.022)       72%,
+    108deg,
+    transparent                       0%,
+    rgba(192, 218, 245, 0.000)        22%,
+    rgba(205, 228, 250, 0.028)        38%,
+    rgba(215, 235, 252, 0.044)        50%,
+    rgba(205, 228, 250, 0.028)        62%,
+    rgba(192, 218, 245, 0.000)        78%,
     transparent                      100%
   );
-  background-size: 200% 100%;
-  animation: waterdrift 28s ease-in-out infinite alternate;
+  background-size: 220% 100%;
+  animation: shimmer-drift 32s ease-in-out infinite alternate;
 }
-@keyframes waterdrift {
-  0%   { background-position: 0%   50%; opacity: 0.6; }
-  100% { background-position: 100% 50%; opacity: 1.0; }
+@keyframes shimmer-drift {
+  0%   { background-position: 20%  50%; }
+  100% { background-position: 80%  50%; }
+}
+
+/* Layer B: whole-area gentle breathe — the sea as a living thing */
+#water-shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(160, 195, 228, 0.018);
+  animation: water-breathe 22s ease-in-out infinite;
+}
+@keyframes water-breathe {
+  0%,  100% { opacity: 0.4; }
+  50%        { opacity: 1.0; }
 }
 
 /* ── Vignette ─────────────────────────────────────────
@@ -138,16 +161,15 @@ main {
 .wordmark {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 400;
-  font-size: 13px;
+  font-size: 15px;
   letter-spacing: 0.32em;
   text-transform: uppercase;
-  /* Brighter — reads against dark painting */
-  color: rgba(210, 195, 148, 0.72);
+  color: rgba(228, 214, 165, 0.88);
   /* Text shadow anchors it against any background zone */
   text-shadow: 0 1px 12px rgba(0,0,0,0.65);
   /* Push it below the moon — moon sits top 25% of frame */
-  margin-top: 22vh;
-  margin-bottom: 14px;
+  margin-top: 10vh;
+  margin-bottom: 16px;
   opacity: 0;
   animation: risefade 3s ease forwards;
 }
@@ -158,7 +180,7 @@ main {
   font-weight: 300;
   font-style: italic;
   font-size: clamp(26px, 4.5vw, 36px);
-  color: rgba(238, 225, 182, 0.94);
+  color: rgba(245, 234, 192, 0.97);
   text-shadow: 0 1px 16px rgba(0,0,0,0.70), 0 0 40px rgba(0,0,0,0.30);
   letter-spacing: 0.02em;
   line-height: 1.4;
@@ -171,8 +193,8 @@ main {
 .home-line-2 {
   font-family: 'Crimson Pro', Georgia, serif;
   font-weight: 400;
-  font-size: clamp(15px, 2.4vw, 18px);
-  color: rgba(195, 182, 142, 0.82);
+  font-size: clamp(16px, 2.6vw, 20px);
+  color: rgba(210, 196, 155, 0.90);
   text-shadow: 0 1px 10px rgba(0,0,0,0.60);
   letter-spacing: 0.06em;
   margin-bottom: 48px;
@@ -198,12 +220,12 @@ main {
 .threshold-btn {
   /* Dark semi-transparent backing — anchors button against any bg zone */
   background: rgba(0, 0, 0, 0.38);
-  border: 1px solid rgba(205, 188, 130, 0.52);
+  border: 1px solid rgba(215, 195, 135, 0.68);
   border-radius: 2px;
-  color: rgba(228, 212, 162, 0.96);
+  color: rgba(240, 225, 175, 1.00);
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 400;
-  font-size: 16px;
+  font-size: 18px;
   letter-spacing: 0.10em;
   padding: 11px 36px;
   cursor: pointer;
@@ -213,9 +235,9 @@ main {
 }
 
 .threshold-btn:hover, .threshold-btn:focus-visible {
-  background: rgba(0, 0, 0, 0.52);
-  border-color: rgba(218, 200, 142, 0.80);
-  color: rgba(242, 228, 178, 1.00);
+  background: rgba(4, 6, 14, 0.68);
+  border-color: rgba(232, 215, 158, 0.95);
+  color: rgba(252, 240, 195, 1.00);
   outline: none;
 }
 
@@ -224,44 +246,50 @@ main {
   padding: 9px 28px;
 }
 
-/* Ghost threshold — almost not there */
+/* Ghost threshold — subtle but findable */
 .threshold-ghost {
-  background: transparent;
-  border: none;
-  color: rgba(185, 170, 125, 0.78);
+  background: rgba(4, 6, 14, 0.36);
+  border: 0.5px solid rgba(175, 158, 108, 0.40);
+  border-radius: 2px;
+  color: rgba(205, 188, 142, 0.90);
   font-family: 'Crimson Pro', Georgia, serif;
   font-style: italic;
-  font-size: 14px;
+  font-size: 16px;
   letter-spacing: 0.05em;
   cursor: pointer;
-  padding: 4px 0;
-  transition: color 0.3s;
+  padding: 9px 26px;
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
   text-shadow: 0 1px 8px rgba(0,0,0,0.55);
 }
 
 .threshold-ghost:hover, .threshold-ghost:focus-visible {
-  color: rgba(215, 200, 155, 0.95);
+  background: rgba(4, 6, 14, 0.52);
+  border-color: rgba(200, 182, 128, 0.68);
+  color: rgba(228, 212, 165, 1.00);
   outline: none;
 }
 
-/* Link-style buttons — used throughout for secondary actions */
+/* Link-style buttons — clear affordance, secondary weight */
 .link-btn {
-  background: transparent;
-  border: none;
-  color: rgba(175, 160, 118, 0.75);
+  background: rgba(4, 6, 14, 0.32);
+  border: 0.5px solid rgba(160, 145, 102, 0.35);
+  border-radius: 2px;
+  color: rgba(195, 178, 132, 0.92);
   font-family: 'Crimson Pro', Georgia, serif;
   font-style: italic;
-  font-size: 15px;
+  font-size: 16px;
   letter-spacing: 0.04em;
   cursor: pointer;
-  padding: 4px 2px;
-  transition: color 0.3s;
+  padding: 8px 18px;
+  transition: color 0.3s, border-color 0.3s, background 0.3s;
   text-decoration: none;
   text-shadow: 0 1px 8px rgba(0,0,0,0.55);
 }
 
 .link-btn:hover, .link-btn:focus-visible {
-  color: rgba(215, 200, 158, 0.95);
+  background: rgba(4, 6, 14, 0.50);
+  border-color: rgba(190, 172, 122, 0.62);
+  color: rgba(225, 210, 165, 1.00);
   outline: none;
 }
 
@@ -373,7 +401,7 @@ textarea:focus {
 .echo-thought {
   font-family: 'Caveat', cursive;
   font-size: 16px;
-  color: rgba(200, 185, 142, 0.52);
+  color: rgba(205, 190, 148, 0.62);
   text-align: center;
   line-height: 1.9;
   margin-bottom: 20px;
@@ -388,13 +416,13 @@ textarea:focus {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(18px, 3.2vw, 22px);
-  color: rgba(225, 200, 135, 0.95);
+  font-size: clamp(20px, 3.5vw, 26px);
+  color: rgba(232, 210, 148, 0.98);
   text-shadow: 0 1px 12px rgba(0,0,0,0.65);
   text-align: center;
-  line-height: 1.75;
-  margin-bottom: 22px;
-  max-width: 400px;
+  line-height: 1.88;
+  margin-bottom: 28px;
+  max-width: 440px;
   min-height: 24px;
 }
 
@@ -469,7 +497,7 @@ textarea:focus {
 .stay-written {
   font-family: 'Caveat', cursive;
   font-size: 16px;
-  color: rgba(208, 192, 148, 0.72);
+  color: rgba(215, 200, 155, 0.80);
   text-shadow: 0 1px 8px rgba(0,0,0,0.55);
   text-align: center;
   line-height: 1.85;
@@ -504,7 +532,7 @@ textarea:focus {
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-weight: 300;
   font-style: italic;
-  font-size: clamp(16px, 2.8vw, 20px);
+  font-size: clamp(18px, 3vw, 22px);
   color: rgba(200, 185, 140, 0.0);
   text-align: center;
   line-height: 2;
@@ -512,7 +540,7 @@ textarea:focus {
   transition: color 4.5s ease;
 }
 
-.sit-message.revealed { color: rgba(215, 200, 158, 0.90);
+.sit-message.revealed { color: rgba(225, 210, 168, 0.94);
   text-shadow: 0 1px 10px rgba(0,0,0,0.60); }
 
 @keyframes stillfade { from { opacity: 0; } to { opacity: 1; } }
@@ -617,7 +645,7 @@ textarea:focus {
           align-items: center; }
 
   /* Home: deliberate desktop scale */
-  .wordmark    { font-size: 12px; letter-spacing: 0.32em; margin-bottom: 16px; margin-top: 24vh; }
+  .wordmark    { font-size: 14px; letter-spacing: 0.32em; margin-bottom: 18px; margin-top: 8vh; }
   .home-line-1 { font-size: 40px; line-height: 1.25; margin-bottom: 12px; }
   .home-line-2 { font-size: 17px; letter-spacing: 0.07em; margin-bottom: 52px; }
   .home-threshold { gap: 18px; }
@@ -678,7 +706,7 @@ textarea:focus {
   main  { padding: 0 72px; }
 
   /* Home */
-  .home-line-1 { font-size: 46px; margin-bottom: 14px; }
+  .home-line-1 { font-size: 48px; margin-bottom: 14px; }
   .home-line-2 { font-size: 16px; margin-bottom: 76px; }
   .threshold-btn { font-size: 17px; padding: 13px 50px; }
 
@@ -706,7 +734,7 @@ textarea:focus {
   .threshold-btn { width: 220px; text-align: center; }
 
   /* Boost small text for legibility */
-  .wordmark    { font-size: 11px; margin-top: 18vh; margin-bottom: 10px; }
+  .wordmark    { font-size: 12px; margin-top: 8vh; margin-bottom: 12px; }
   .home-line-1 { font-size: 28px; }
   .home-line-2 { font-size: 15px; }
   .threshold-btn       { font-size: 16px; padding: 12px 0; }
